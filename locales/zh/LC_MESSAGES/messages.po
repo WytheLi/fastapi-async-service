@@ -1,0 +1,18 @@
+# Copyright (C) 2024 Example Corp
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+
+msgid "Baidu is accessible."
+msgstr "百度可访问。"
+
+msgid "Baidu is not accessible."
+msgstr "百度不可访问。"
+
+msgid "Google is accessible."
+msgstr "谷歌可访问。"
+
+msgid "Google is not accessible."
+msgstr "谷歌不可访问。"
