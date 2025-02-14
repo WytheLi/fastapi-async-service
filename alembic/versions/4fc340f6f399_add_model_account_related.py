@@ -167,7 +167,7 @@ def upgrade() -> None:
     sa.Column('city', sa.String(length=50), nullable=True, comment='城市'),
     sa.Column('address', sa.String(length=256), nullable=True, comment='地址'),
     sa.Column('remark', sa.String(length=500), nullable=True, comment='备注'),
-    sa.Column('last_login', sa.DateTime(), nullable=True, comment='最后登录时间'),
+    sa.Column('last_login', sa.TIMESTAMP(timezone=True), nullable=True, comment='最后登录时间'),
     sa.Column('is_delete', sa.Boolean(), nullable=True, server_default=sa.text("false"), comment='用户是否被删除'),
     sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text("now()"), nullable=False, comment='创建时间'),
     sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text("now()"), nullable=False, comment='更新时间'),

@@ -23,13 +23,13 @@ async_session = async_sessionmaker(
 )
 
 
-async def create_table():
-    """
-    创建数据库表
-    """
-    from models import Base
-    async with async_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+# async def create_table():
+#     """
+#     创建数据库表
+#     """
+#     from models import Base
+#     async with async_engine.begin() as conn:
+#         await conn.run_sync(Base.metadata.create_all)
 
 
 async def get_async_session() -> AsyncSession:

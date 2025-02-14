@@ -2,7 +2,7 @@ import uuid
 from enum import Enum
 
 from sqlalchemy.orm import relationship
-from sqlalchemy import Table, Column, Integer, String, DateTime, Date, event, text, Boolean, Index, Float
+from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, Date, event, text, Boolean, Index, Float, func
 
 from db import Base
 from utils.shortcode_converter import ShortCodeUtils
@@ -61,7 +61,7 @@ class User(BaseModel):
     city = Column(String(50), comment='城市')
     address = Column(String(256), comment='地址')
     remark = Column(String(500), comment='备注')
-    last_login = Column(DateTime, comment='最后登录时间')
+    last_login = Column(TIMESTAMP(timezone=True), default=func.now(), comment='最后登录时间')
     is_delete = Column(Boolean, default=False, comment='用户是否被删除')
 
     roles = relationship(

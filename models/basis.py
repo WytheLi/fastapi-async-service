@@ -1,5 +1,5 @@
 from sqlalchemy.orm import relationship
-from sqlalchemy import Table, Column, Integer, String, DateTime, Date, Numeric, Text, Boolean, func
+from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, Date, Numeric, Text, Boolean, func
 
 from .abstract import BaseModel
 
@@ -78,8 +78,8 @@ class Country(BaseModel):
 #     remark = Column(String, comment='备注')
 #     announcement_type = Column(Integer, default=0, comment='公告类型,0:内容;1:跳转')
 #     announcement_weight = Column(Integer, default=1, comment='公告权重')  # 控制公告显示颜色 1：蓝色；2：紫色；3：红色
-#     on_shelf_date = Column(DateTime, default=func.now(), comment='上架日期')
-#     down_shelf_date = Column(DateTime, default=func.now(), comment='下架日期')
+#     on_shelf_date = Column(TIMESTAMP, default=func.now(), comment='上架日期')
+#     down_shelf_date = Column(TIMESTAMP, default=func.now(), comment='下架日期')
 #
 #     translations = relationship(
 #         "Translation",

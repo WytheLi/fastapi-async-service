@@ -15,7 +15,7 @@ class LocaleMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next: Callable):
         # 从请求头中获取语言信息
-        language = request.headers.get('language', settings.LANGUAGE_CODE)
+        language = request.headers.get('Accept-Language', settings.LANGUAGE_CODE)
         request.state.language = language
         # 获取指定语言的翻译实例
         translation = self.translation_manager.get_translation(language)
@@ -23,6 +23,7 @@ class LocaleMiddleware(BaseHTTPMiddleware):
 
         # 从请求头中获取时区信息
         user_timezone = request.headers.get('X-Timezone', settings.TIME_ZONE)
+        request.state.user_timezone = user_timezone
 
         response = await call_next(request)
 

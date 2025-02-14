@@ -67,6 +67,6 @@ async def install_device(
 ):
     user = request.state.user
 
-    data = UserSchema.model_validate(user)
+    data = UserSchema.model_validate(user, context={"request": request})
 
     return CustomJSONResponse(StatusInfo.Success, data=data)
