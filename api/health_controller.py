@@ -15,7 +15,8 @@ from core.cache.redis_client import RedisClient
 from db.async_engine import get_async_session
 from schemas.health import LocaleTimeSchema
 from settings import settings
-from utils.response import CustomJSONResponse, General
+from core.response import CustomJSONResponse
+from utils.status_info import StatusInfo
 
 health_router = APIRouter()
 
@@ -99,4 +100,4 @@ async def locale_time(request: Request):
     locale_time = datetime.now()
     china_time = datetime.now(tz)
     data = LocaleTimeSchema(locale_time=locale_time, china_time=china_time)
-    return CustomJSONResponse(General.Success, data=data)
+    return CustomJSONResponse(StatusInfo.Success, data=data)

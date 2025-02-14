@@ -10,9 +10,17 @@ from settings import settings
 
 
 # 创建引擎（数据库连接的工厂，它还保留连接池内的连接以便快速重用）
-async_engine = create_async_engine(settings.PGSQL_URL, echo=settings.DB_ECHO, future=True, pool_pre_ping=True)
+async_engine = create_async_engine(
+    settings.PGSQL_URL,
+    echo=settings.DB_ECHO,
+    future=True,
+    pool_pre_ping=True
+)
 
-async_session = async_sessionmaker(bind=async_engine, autoflush=False, expire_on_commit=False)
+async_session = async_sessionmaker(
+    bind=async_engine,
+    expire_on_commit=False  # 在提交后，访问对象时会重新从数据库加载数据/仍然使用缓存的对象数据
+)
 
 
 async def create_table():

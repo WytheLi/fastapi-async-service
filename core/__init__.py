@@ -1,10 +1,12 @@
 import os
 
 from fastapi import FastAPI
+from starlette.exceptions import HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
 from core.events import startup_handler, shutdown_handler
+from core.exception_handler import http_exception_handler
 from core.middleware.locale import LocaleMiddleware
 from core.translation import translation_manager
 from routers import api_router, direct_router
@@ -40,6 +42,9 @@ def create_app() -> FastAPI:
     # 添加启动和关闭事件处理
     app.add_event_handler("startup", startup_handler(app))
     app.add_event_handler("shutdown", shutdown_handler(app))
+
+    # 全局异常捕获，统一响应格式
+    app.add_exception_handler(HTTPException, http_exception_handler)
 
     # 挂载静态文件目录
     static_dir = os.path.join(settings.BASE_PATH, "resources/static")

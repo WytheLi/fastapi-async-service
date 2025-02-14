@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, declared_attr
-from sqlalchemy.orm import relationship
 
 
 class Base(DeclarativeBase):

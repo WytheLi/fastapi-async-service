@@ -29,6 +29,7 @@ if __name__ == '__main__':
             'main:app',
             host=settings.HOST,
             port=settings.PORT,
+            log_level=settings.LOG_LEVEL,
             reload=settings.RELOAD,
             reload_dirs=[settings.BASE_PATH],
             workers=settings.WORKERS

@@ -18,14 +18,15 @@ class Settings(BaseSettings):
     # # env_prefix='my_prefix_'用于更改所有环境变量名的前缀
     model_config = SettingsConfigDict(env_file=('.env', 'local.env'), case_sensitive=False)
 
+    # 项目根目录
     BASE_PATH: str = os.path.dirname(os.path.abspath(__file__))
 
     # server 配置
     HOST: str = "0.0.0.0"
     PORT: int = 8001
     RELOAD: bool = True
-    DEBUG: bool = True
-    LOG_LEVEL: str = "info"  # 按等级过滤url请求日志，只做debug输出
+    DEBUG: bool = False
+    LOG_LEVEL: str = "debug"  # 按等级过滤url请求日志，只做debug输出
     API_PREFIX: str = "/api/v1"
     WORKERS: int = 1
 
@@ -39,7 +40,7 @@ class Settings(BaseSettings):
     REDOC_URL: Optional[str] = None  # 默认关闭"/redoc"路径的Redocly接口文档
     # SWAGGER_UI_OAUTH2_REDIRECT_URL: Optional[str] = "/docs/oauth2-redirect"  # 默认swagger认证后回调地址
     # SWAGGER_UI_INIT_OAUTH: Optional[dict] = None  # 默认swagger开启认证
-    SWAGGER_PASSWORD: str = "demo"
+    SWAGGER_PASSWORD: str = ""
 
     # logger 配置
     LOGFILE_OUTPUT: bool = False
@@ -54,12 +55,10 @@ class Settings(BaseSettings):
     ALLOW_HEADERS: List[str] = ["*"]
 
     # JWT配置
-    SECRET_KEY: str = "your-secret-key"
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    JWT_TOKEN_PREFIX: str = "Bearer"  # noqa: S105
-    TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 8天
-    SECRET_KEY_API: str = ""
+    JWT_SECRET_KEY: str = "your-secret-key"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_TOKEN_HEADER_PREFIX: str = "Bearer"  # noqa: S105
+    JWT_TOKEN_EXPIRES: int = 60 * 60 * 24 * 7
 
     # database 配置
     PGSQL_URL: str = "postgresql://<username>:<password>@<host:port>/<dbname>"
