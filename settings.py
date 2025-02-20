@@ -83,5 +83,10 @@ class Settings(BaseSettings):
     TIME_ZONE: str = "Asia/Shanghai"  # 默认时区
     LANGUAGE_CODE: str = "en"     # 默认语言
 
+    # Kafka
+    KAFKA_BOOTSTRAP_SERVERS: str = "localhost:9092"
+    KAFKA_TOPIC: str = "fastapi_topic"
+    KAFKA_GROUP_ID: str = "fastapi-group"
+
 
 settings = Settings()
