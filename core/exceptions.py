@@ -5,6 +5,13 @@ from fastapi import status
 from starlette.exceptions import HTTPException
 
 
+class CustomException(HTTPException):
+    """ 用于捕获已知异常，响应内部状态码 """
+    def __init__(self, message: str = 'Bad Request'):
+        self.status_code = status.HTTP_200_OK
+        self.detail = message
+
+
 class RequestException(HTTPException):
 
     def __init__(self, message: str = 'Bad Request'):

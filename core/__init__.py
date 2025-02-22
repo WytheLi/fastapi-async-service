@@ -7,6 +7,7 @@ from starlette.staticfiles import StaticFiles
 
 from core.events import startup_handler, shutdown_handler
 from core.exception_handler import http_exception_handler
+from core.middleware.encryption import EncryptionMiddleware
 from core.middleware.locale import LocaleMiddleware
 from core.translation import translation_manager
 from routers import api_router, direct_router
@@ -34,6 +35,8 @@ def create_app() -> FastAPI:
     )
     # 添加i18n国际化中间件
     app.add_middleware(LocaleMiddleware, translation_manager=translation_manager)
+    # API加密/解密
+    app.add_middleware(EncryptionMiddleware)
 
     # 添加路由
     app.include_router(api_router, prefix=settings.API_PREFIX)

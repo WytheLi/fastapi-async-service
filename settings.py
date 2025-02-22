@@ -88,5 +88,11 @@ class Settings(BaseSettings):
     KAFKA_TOPIC: str = "fastapi_topic"
     KAFKA_GROUP_ID: str = "fastapi-group"
 
+    # API请求加密
+    AES_KEY: str = 'your_secret_key1'
+    AES_IV: str = 'your_iv_12345678'
+    ENCRYPTION_ENABLED: bool = False
+    ENCRYPTION_TYPE: str = ''     # Options: AES,RSA
+
 
 settings = Settings()
