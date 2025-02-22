@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from starlette.responses import JSONResponse, PlainTextResponse
 
-from core.cache.redis_client import RedisClient
+from core.cache.redis import cache
 from db.async_engine import get_async_session
 from schemas.health import LocaleTimeSchema
 from settings import settings
@@ -84,7 +84,7 @@ async def root_db(request: Request, session: AsyncSession = Depends(get_async_se
 async def redis_health(request: Request):
     try:
         # ping redis
-        redis_client = RedisClient().get_client()
+        redis_client = cache.get_client()
         pong = redis_client.ping()
         if pong:
             return JSONResponse(content={"status": "ok", "message": "Redis is connected"})

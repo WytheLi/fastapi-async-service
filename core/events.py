@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi_limiter import FastAPILimiter
 from loguru import logger
 
+from core.cache.redis import cache
 from core.logger import configure_logger
 from core.scheduler import scheduler_manager
 from infrastructure.kafka.producer import kafka_producer
@@ -25,6 +26,9 @@ def startup_handler(app: FastAPI) -> Callable:  # type: ignore
 
         # 启动 Kafka 生产者
         await kafka_producer.start()
+
+        # 初始化redis连接池
+        await cache.connect()
     return start_app
 
 
@@ -35,4 +39,7 @@ def shutdown_handler(app: FastAPI) -> Callable:  # type: ignore
 
         # 关闭 Kafka 生产者
         await kafka_producer.stop()
+
+        # 关闭redis连接
+        await cache.close()
     return stop_app

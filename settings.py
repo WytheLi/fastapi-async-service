@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     TITLE: str = "FastAPI"
     DESCRIPTION: str = "FastApi Api Service"
     VERSION: str = "1.0.0"
-    # OPENAPI_URL: Optional[str] = "/openapi.json"
+    OPENAPI_URL: Optional[str] = None
     # OPENAPI_TAGS: Optional[List[Dict[str, Any]]] = None
     DOCS_URL: Optional[str] = None  # 默认关闭"/docs"路径的Swagger接口文档
     REDOC_URL: Optional[str] = None  # 默认关闭"/redoc"路径的Redocly接口文档

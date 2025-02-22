@@ -38,6 +38,12 @@ class EncryptionMiddleware(BaseHTTPMiddleware):
                 )
 
         response = await call_next(request)
+
+        # 指定路由跳过加解密操作
+        if request.url.path.startswith((settings.DOCS_URL, settings.REDOC_URL, settings.OPENAPI_URL)):
+            response = await call_next(request)
+            return response
+
         # 处理响应体（加密）
         if settings.ENCRYPTION_ENABLED and settings.ENCRYPTION_TYPE == 'AES':
             if response.headers.get("content-type") == "application/json":
@@ -45,5 +51,4 @@ class EncryptionMiddleware(BaseHTTPMiddleware):
                 response_data = b"".join(response_body).decode()
                 encrypted_response = aes_encryption.encrypt(response_data)
                 return Response(content=encrypted_response, media_type="text/plain")
-
         return response
