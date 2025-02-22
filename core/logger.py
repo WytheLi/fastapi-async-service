@@ -1,11 +1,15 @@
 import os
 import sys
 import time
-from settings import settings
+
 from loguru import logger
+
+from settings import settings
 
 
 def configure_logger():
+    logger.remove()  # 移除默认的日志配置
+
     # 配置控制台输出
     logger.add(sys.stderr, level=settings.LOGGER_LEVEL, format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}")
 
@@ -19,6 +23,7 @@ def configure_logger():
         retention="30 days",  # 保留最近 30 天的日志
         compression="zip",  # 过期日志压缩为 zip 格式
         enqueue=True,  # 启用异步日志（适用于高并发环境）
+        encoding="utf-8"  # 设置编码
     )
 
     # 配置其他日志（例如错误日志单独存放）

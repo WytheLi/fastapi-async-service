@@ -4,13 +4,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from core.decorators import authorize_required
+from utils.geoip import geoip_service
 from utils.identifier import custom_identifier
 from db.async_engine import get_async_session
 from models import User
 from schemas.account import DeviceSchema, UserSchema
 from services.repo.account import query_auth_device, query_user_by_user_uuid
 from services.account import UserResource
-from utils import constants, signature, ip_parse
+from utils import constants, signature
 from core.response import CustomJSONResponse
 from utils.status_info import StatusInfo
 
@@ -31,14 +32,12 @@ async def install_device(
     x_forwarded_for = request.headers.get('X-Forwarded-For', '')
     ip_address = x_forwarded_for if x_forwarded_for != '' else request.client.host
     user_agent = request.headers.get('User-Agent', '')
-    ip_parse_info = ip_parse.get_cidr_info_with_isp(ip_address)
-    isp = ip_parse_info.get('isp', '')
+    ip_info = geoip_service.get_country(ip_address)
+    isp = ip_info.get('isp', '')
     country_list = [country.value for country in constants.OpenCountry]
-    if ip_parse_info["country_name"] not in country_list:
-        country = constants.OpenCountry.AMERICA.value
-    else:
-        country = ip_parse_info["country_name"]
-    ip_info = {"ip_address": ip_address, "user_agent": user_agent, 'isp': isp, 'country': country}
+    if ip_info.get("country") not in country_list:
+        ip_info["country"] = constants.OpenCountry.PHILIPPINES.value
+    ip_info.update({"ip_address": ip_address, "user_agent": user_agent, 'isp': isp})
     device_data = DeviceSchema(**device_data.model_dump(), **ip_info)
 
     auth_device = await query_auth_device(session, device_data.device_id, device_data.package_name)
