@@ -17,3 +17,4 @@ bcrypt==4.2.1
 aiokafka==0.12.0
 pycryptodome==3.21.0
 geoip2==5.0.1
+ipython==8.33.0

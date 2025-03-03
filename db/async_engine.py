@@ -48,6 +48,11 @@ async def get_async_session() -> AsyncSession:
             await session.close()
 
 
+async def create_async_session():
+    async with async_session() as session:
+        return session
+
+
 # @asynccontextmanager
 # async def get_async_session() -> AsyncGenerator:
 #     """

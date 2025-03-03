@@ -40,7 +40,8 @@ class EncryptionMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
 
         # 指定路由跳过加解密操作
-        if request.url.path.startswith((settings.DOCS_URL, settings.REDOC_URL, settings.OPENAPI_URL)):
+        exclude_paths = tuple(filter(None, (settings.DOCS_URL, settings.REDOC_URL, settings.OPENAPI_URL)))  # 过滤掉None
+        if request.url.path.startswith(exclude_paths):
             response = await call_next(request)
             return response
 
