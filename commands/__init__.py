@@ -7,6 +7,7 @@ import sys
 
 import models
 from db import Base
+
 from .base import BaseCommand
 
 
