@@ -25,7 +25,8 @@ def startup_handler(app: FastAPI) -> Callable:  # type: ignore
         await FastAPILimiter.init(redis_client)
 
         # 启动 Kafka 生产者
-        await kafka_producer.start()
+        if settings.KAFKA_BOOTSTRAP_SERVERS:
+            await kafka_producer.start()
 
         # 初始化redis连接池
         await cache.connect()

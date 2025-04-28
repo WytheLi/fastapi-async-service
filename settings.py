@@ -81,10 +81,10 @@ class Settings(BaseSettings):
     # 本地化配置
     USE_TZ: bool = True  # 启用时区支持
     TIME_ZONE: str = "Asia/Shanghai"  # 默认时区
-    LANGUAGE_CODE: str = "en"     # 默认语言
+    LANGUAGE_CODE: str = "en"  # 默认语言
 
     # Kafka
-    KAFKA_BOOTSTRAP_SERVERS: str = "localhost:9092"
+    KAFKA_BOOTSTRAP_SERVERS: Optional[str] = None  # localhost:9092
     KAFKA_TOPIC: str = "fastapi_topic"
     KAFKA_GROUP_ID: str = "fastapi-group"
 
@@ -92,7 +92,7 @@ class Settings(BaseSettings):
     AES_KEY: str = 'your_secret_key1'
     AES_IV: str = 'your_iv_12345678'
     ENCRYPTION_ENABLED: bool = False
-    ENCRYPTION_TYPE: str = ''     # Options: AES,RSA
+    ENCRYPTION_TYPE: Optional[str] = None  # Options: AES,RSA
 
 
 settings = Settings()

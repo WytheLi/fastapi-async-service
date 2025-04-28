@@ -1,3 +1,36 @@
+[project]
+name = "fastapi-async-service"
+version = "1.0.0"
+description = ""
+authors = [
+    {name = "Fastapi Async Service", email = "wytheli168@163.com"},
+]
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+
+[tool.poetry.dependencies]
+apscheduler = "3.11.0"
+asyncpg = "0.30.0"
+fastapi = "0.115.8"
+fastapi-limiter = "0.1.6"
+loguru = "0.7.3"
+pydantic = "2.10.6"
+pydantic-settings = "2.7.1"
+pyjwt = "1.7.1"
+pytz = "2025.1"
+redis = "5.2.1"
+requests = "2.32.3"
+sqlalchemy = "2.0.38"
+uvicorn = {version = "0.34.0", extras = ["standard"]}
+alembic = "1.14.1"
+passlib = "1.7.4"
+bcrypt = "4.2.1"
+aiokafka = "0.12.0"
+pycryptodome = "3.21.0"
+geoip2 = "5.0.1"
+ipython = "8.33.0"
+pre-commit = "4.1.0"
+
 [tool.black]
 line-length = 119
 include = '\.pyi?$'

@@ -3,8 +3,6 @@ from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
-from core.crypto.aes import aes_encryption
-from core.crypto.rsa import rsa_encryption
 from settings import settings
 
 
@@ -18,8 +16,12 @@ class EncryptionMiddleware(BaseHTTPMiddleware):
             try:
                 if settings.ENCRYPTION_ENABLED:
                     if settings.ENCRYPTION_TYPE == 'RSA':
+                        from core.crypto.rsa import rsa_encryption
+
                         decrypted_data = rsa_encryption.decrypt_with_private_key(encrypted_body.decode())
                     elif settings.ENCRYPTION_TYPE == 'AES':
+                        from core.crypto.aes import aes_encryption
+
                         decrypted_data = aes_encryption.decrypt(encrypted_body.decode())
                     else:
                         raise ValueError('Encryption type error.')
