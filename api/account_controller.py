@@ -1,18 +1,22 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
+from fastapi import Depends
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from core.decorators import authorize_required
-from utils.geoip import geoip_service
-from utils.identifier import custom_identifier
+from core.response import CustomJSONResponse
 from db.async_engine import get_async_session
 from models import User
-from schemas.account import DeviceSchema, UserSchema
-from services.repo.account import query_auth_device, query_user_by_user_uuid
+from schemas.account import DeviceSchema
+from schemas.account import UserSchema
 from services.account import UserResource
-from utils import constants, signature
-from core.response import CustomJSONResponse
+from services.repo.account import query_auth_device
+from services.repo.account import query_user_by_user_uuid
+from utils import constants
+from utils import signature
+from utils.geoip import geoip_service
+from utils.identifier import custom_identifier
 from utils.status_info import StatusInfo
 
 account_router = APIRouter()
@@ -20,36 +24,33 @@ account_router = APIRouter()
 
 @account_router.post(
     "/device",
-    dependencies=[Depends(RateLimiter(times=1, seconds=10))],
-    summary='新设备注册登录'
+    # dependencies=[Depends(RateLimiter(times=1, seconds=10))],
+    summary="新设备注册登录",
 )
 async def install_device(
-        request: Request,
-        device_data: DeviceSchema,
-        session: AsyncSession = Depends(get_async_session)
+    request: Request, device_data: DeviceSchema, session: AsyncSession = Depends(get_async_session)
 ):
     # 查询设备是否已注册过，带包名查
-    x_forwarded_for = request.headers.get('X-Forwarded-For', '')
-    ip_address = x_forwarded_for if x_forwarded_for != '' else request.client.host
-    user_agent = request.headers.get('User-Agent', '')
+    x_forwarded_for = request.headers.get("X-Forwarded-For", "")
+    ip_address = x_forwarded_for if x_forwarded_for != "" else request.client.host
+    user_agent = request.headers.get("User-Agent", "")
     ip_info = geoip_service.get_country(ip_address)
-    isp = ip_info.get('isp', '')
+    isp = ip_info.get("isp", "")
     country_list = [country.value for country in constants.OpenCountry]
     if ip_info.get("country") not in country_list:
         ip_info["country"] = constants.OpenCountry.PHILIPPINES.value
-    ip_info.update({"ip_address": ip_address, "user_agent": user_agent, 'isp': isp})
+    ip_info.update({"ip_address": ip_address, "user_agent": user_agent, "isp": isp})
     device_data = DeviceSchema(**device_data.model_dump(), **ip_info)
 
     auth_device = await query_auth_device(session, device_data.device_id, device_data.package_name)
     if not auth_device:
-        user_id = await UserResource.create_user(session, device_data)
+        user = await UserResource.create_user(session, device_data)
     else:
         user = await query_user_by_user_uuid(session, user_uuid=auth_device.user_uuid)
         if user.status == User.Status.DISABLE.value:
             return CustomJSONResponse(StatusInfo.USER_IS_DISABLE)
-        user_id = user.id
 
-    token = signature.create_access_token(user_id)
+    token = signature.create_access_token(user.id)
 
     return CustomJSONResponse(StatusInfo.Success, data={"token": token})
 
@@ -57,13 +58,10 @@ async def install_device(
 @account_router.get(
     "/me",
     dependencies=[Depends(RateLimiter(times=1, seconds=10, identifier=custom_identifier))],
-    summary='新设备注册登录'
+    summary="获取当前用户信息",
 )
 @authorize_required(perms=[])
-async def install_device(
-        request: Request,
-        session: AsyncSession = Depends(get_async_session)
-):
+async def get_current_user(request: Request, session: AsyncSession = Depends(get_async_session)):
     user = request.state.user
 
     data = UserSchema.model_validate(user, context={"request": request})
