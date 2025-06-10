@@ -1,8 +1,11 @@
 import os
 
+from debug_toolbar.middleware import DebugToolbarMiddleware
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
+from starlette_prometheus import PrometheusMiddleware, metrics
+
 from core.events import startup_handler, shutdown_handler
 from core.exception_handler import exception_handler, add_exception_handler
 from core.middleware.encryption import EncryptionMiddleware
@@ -36,6 +39,16 @@ def create_app() -> FastAPI:
     app.add_middleware(LocaleMiddleware, translation_manager=translation_manager)
     # API加密/解密
     app.add_middleware(EncryptionMiddleware)
+    # 添加 Prometheus 中间件
+    app.add_middleware(PrometheusMiddleware)
+    app.add_route("/metrics", metrics)  # 暴露指标端点
+
+    if os.getenv("ENV") == "development":
+        # Debug Toolbar
+        app.add_middleware(
+            DebugToolbarMiddleware,
+            panels=["debug_toolbar.panels.sqlalchemy.SQLAlchemyPanel"]
+        )
 
     # 添加路由
     app.include_router(api_router, prefix=settings.API_PREFIX)

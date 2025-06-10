@@ -35,6 +35,9 @@ httpx = {extras = ["http2"], version = "^0.28.1"}
 asgi-lifespan = "^2.1.0"
 pytest-asyncio = "^0.26.0"
 aiosqlite = "^0.21.0"
+fastapi-debug-toolbar = "^0.6.3"
+prometheus-client = "^0.22.0"
+starlette-prometheus = "^0.10.0"
 
 [tool.black]
 line-length = 119

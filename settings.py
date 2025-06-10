@@ -94,5 +94,8 @@ class Settings(BaseSettings):
     ENCRYPTION_ENABLED: bool = False
     ENCRYPTION_TYPE: Optional[str] = None  # Options: AES,RSA
 
+    # 项目运行环境（development: 开发环境，production: 生产环境）
+    ENV: Optional[str] = "development"
+
 
 settings = Settings()
