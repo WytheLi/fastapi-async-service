@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import time
@@ -5,6 +6,20 @@ import time
 from loguru import logger
 
 from settings import settings
+
+
+class InterceptHandler(logging.Handler):
+    """
+    劫持logging模块日志到loguru
+    """
+    def emit(self, record):
+        # 把标准级别名转换成 Loguru 的级别，找不到就用 record.levelno
+        try:
+            level = logger.level(record.levelname).name
+        except ValueError:
+            level = record.levelno
+        # depth=6 让 Loguru 能正确显示调用方代码位置
+        logger.opt(depth=6, exception=record.exc_info).log(level, record.getMessage())
 
 
 def configure_logger():
@@ -36,3 +51,14 @@ def configure_logger():
     #     compression="zip",
     #     enqueue=True
     # )
+
+    # 用 InterceptHandler 劫持标准库 logging 模块日志
+    root = logging.getLogger()
+    root.handlers = [InterceptHandler()]
+    root.setLevel(settings.LOGGER_LEVEL.upper())
+
+    for logger_name in ["uvicorn", "uvicorn.error", "uvicorn.access", "fastapi"]:
+        _logger = logging.getLogger(logger_name)
+        _logger.handlers = [InterceptHandler()]
+        _logger.setLevel(settings.LOGGER_LEVEL.upper())
+        _logger.propagate = False   # 关闭向上冒泡，防止日志重复
