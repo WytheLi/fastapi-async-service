@@ -1,17 +1,21 @@
 import os
 
-from debug_toolbar.middleware import DebugToolbarMiddleware
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
-from starlette_prometheus import PrometheusMiddleware, metrics
+from starlette_prometheus import PrometheusMiddleware
+from starlette_prometheus import metrics
 
-from core.events import startup_handler, shutdown_handler
-from core.exception_handler import exception_handler, add_exception_handler
+from core.events import shutdown_handler
+from core.events import startup_handler
+from core.exception_handler import add_exception_handler
+from core.exception_handler import exception_handler
 from core.middleware.encryption import EncryptionMiddleware
 from core.middleware.locale import LocaleMiddleware
+from core.middleware.profiler import PyInstrumentMiddleware
 from core.translation import translation_manager
-from routers import api_router, direct_router
+from routers import api_router
+from routers import direct_router
 from settings import settings
 
 
@@ -24,7 +28,7 @@ def create_app() -> FastAPI:
         version=settings.VERSION,
         openapi_url=settings.OPENAPI_URL,
         docs_url=settings.DOCS_URL,
-        redoc_url=settings.REDOC_URL
+        redoc_url=settings.REDOC_URL,
     )
 
     # 添加 CORS 中间件
@@ -33,22 +37,24 @@ def create_app() -> FastAPI:
         allow_origins=settings.ALLOWED_HOSTS,
         allow_credentials=settings.ALLOW_CREDENTIALS,
         allow_methods=settings.ALLOW_METHODS,
-        allow_headers=settings.ALLOW_HEADERS
+        allow_headers=settings.ALLOW_HEADERS,
     )
     # 添加i18n国际化中间件
     app.add_middleware(LocaleMiddleware, translation_manager=translation_manager)
     # API加密/解密
     app.add_middleware(EncryptionMiddleware)
+    # 添加 pyinstrument 性能分析中间件
+    app.add_middleware(PyInstrumentMiddleware)
     # 添加 Prometheus 中间件
     app.add_middleware(PrometheusMiddleware)
     app.add_route("/metrics", metrics)  # 暴露指标端点
 
-    if os.getenv("ENV") == "development":
-        # Debug Toolbar
-        app.add_middleware(
-            DebugToolbarMiddleware,
-            panels=["debug_toolbar.panels.sqlalchemy.SQLAlchemyPanel"]
-        )
+    # if os.getenv("ENV") == "development":
+    #     # Debug Toolbar
+    #     app.add_middleware(
+    #         DebugToolbarMiddleware,
+    #         panels=["debug_toolbar.panels.sqlalchemy.SQLAlchemyPanel"]
+    #     )
 
     # 添加路由
     app.include_router(api_router, prefix=settings.API_PREFIX)

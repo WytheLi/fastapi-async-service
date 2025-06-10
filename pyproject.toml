@@ -38,6 +38,7 @@ aiosqlite = "^0.21.0"
 fastapi-debug-toolbar = "^0.6.3"
 prometheus-client = "^0.22.0"
 starlette-prometheus = "^0.10.0"
+pyinstrument = "^5.0.2"
 
 [tool.black]
 line-length = 119

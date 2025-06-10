@@ -1,9 +1,11 @@
 #!/bin/env python3
 # -*- encoding: utf-8 -*-
 import os
+from typing import List
+from typing import Optional
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Optional, List
+from pydantic_settings import BaseSettings
+from pydantic_settings import SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -12,11 +14,12 @@ class Settings(BaseSettings):
     https://docs.pydantic.dev/latest/concepts/pydantic_settings/
     优先级：.env > system environment variable > define default value
     """
+
     # pydantic 配置
     # # env_file加载.env文件
     # # case_sensitive环境变量名是/否区分大小写
     # # env_prefix='my_prefix_'用于更改所有环境变量名的前缀
-    model_config = SettingsConfigDict(env_file=('.env', 'local.env'), case_sensitive=False)
+    model_config = SettingsConfigDict(env_file=(".env", "local.env"), case_sensitive=False)
 
     # 项目根目录
     BASE_PATH: str = os.path.dirname(os.path.abspath(__file__))
@@ -45,8 +48,8 @@ class Settings(BaseSettings):
     # logger 配置
     LOGFILE_OUTPUT: bool = False
     LOGFILE_NAME: str = "FastAPI"
-    LOG_FILE_PATH: str = os.path.join(BASE_PATH, 'logs')
-    LOGGER_LEVEL: str = 'INFO'
+    LOG_FILE_PATH: str = os.path.join(BASE_PATH, "logs")
+    LOGGER_LEVEL: str = "INFO"
 
     # Cors 配置
     ALLOWED_HOSTS: List[str] = ["*"]
@@ -72,10 +75,10 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
     GOOGLE_OAUTH_INFO: dict = {
-        'auth_uri': "https://accounts.google.com/o/oauth2/auth",
-        'token_uri': "https://oauth2.googleapis.com/token",
-        'userinfo_uri': "https://www.googleapis.com/oauth2/v1/userinfo",
-        'scope': "openid email profile"
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "userinfo_uri": "https://www.googleapis.com/oauth2/v1/userinfo",
+        "scope": "openid email profile",
     }
 
     # 本地化配置
@@ -89,13 +92,15 @@ class Settings(BaseSettings):
     KAFKA_GROUP_ID: str = "fastapi-group"
 
     # API请求加密
-    AES_KEY: str = 'your_secret_key1'
-    AES_IV: str = 'your_iv_12345678'
+    AES_KEY: str = "your_secret_key1"
+    AES_IV: str = "your_iv_12345678"
     ENCRYPTION_ENABLED: bool = False
     ENCRYPTION_TYPE: Optional[str] = None  # Options: AES,RSA
 
     # 项目运行环境（development: 开发环境，production: 生产环境）
     ENV: Optional[str] = "development"
+
+    PYINSTRUMENT_PROFILE_DIR: Optional[str] = os.path.join(BASE_PATH, "resources/assets/perf")
 
 
 settings = Settings()
