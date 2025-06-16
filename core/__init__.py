@@ -10,6 +10,7 @@ from core.events import shutdown_handler
 from core.events import startup_handler
 from core.exception_handler import add_exception_handler
 from core.exception_handler import exception_handler
+from core.middleware.context import RequestContextMiddleware
 from core.middleware.encryption import EncryptionMiddleware
 from core.middleware.locale import LocaleMiddleware
 from core.middleware.profiler import PyInstrumentMiddleware
@@ -48,6 +49,8 @@ def create_app() -> FastAPI:
     # 添加 Prometheus 中间件
     app.add_middleware(PrometheusMiddleware)
     app.add_route("/metrics", metrics)  # 暴露指标端点
+    # 请求上下文中间件（该中间件需要放置在所有中间件的最末尾）
+    app.add_middleware(RequestContextMiddleware)
 
     # if os.getenv("ENV") == "development":
     #     # Debug Toolbar

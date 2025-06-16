@@ -100,7 +100,12 @@ class Settings(BaseSettings):
     # 项目运行环境（development: 开发环境，production: 生产环境）
     ENV: Optional[str] = "development"
 
+    # Pyinstrument性能分析
     PYINSTRUMENT_PROFILE_DIR: Optional[str] = os.path.join(BASE_PATH, "resources/assets/perf")
+
+    # HTTP Headers
+    HTTP_REQUEST_ID_HEADER: str = "X-Request-ID"
+    HTTP_PROCESS_TIME_HEADER: str = "X-Process-Time"
 
 
 settings = Settings()
