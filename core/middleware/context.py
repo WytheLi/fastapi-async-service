@@ -51,8 +51,8 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
         response.headers[settings.HTTP_REQUEST_ID_HEADER] = request_id
 
         process_time = time.time() - start_time
-        # 添加处理时间到响应头
-        response.headers[settings.HTTP_PROCESS_TIME_HEADER] = str(process_time)
+        # 在响应头中返回接口处理时间（精确到毫秒）
+        response.headers[settings.HTTP_PROCESS_TIME_HEADER] = str(round(process_time, 3))
 
         response.background = BackgroundTask(self.at_last_execute, request)
         return response
