@@ -6,16 +6,21 @@ from datetime import datetime
 
 import pytz
 import requests
-from fastapi import Depends, Request, HTTPException, APIRouter
+from fastapi import APIRouter
+from fastapi import Depends
+from fastapi import HTTPException
+from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
-from starlette.responses import JSONResponse, PlainTextResponse
+from starlette.responses import JSONResponse
+from starlette.responses import PlainTextResponse
 
 from core.cache.redis import cache
+from core.response import CustomJSONResponse
+from core.utils.translation import ugettext_lazy as _
 from db.async_engine import get_async_session
 from schemas.health import LocaleTimeSchema
 from settings import settings
-from core.response import CustomJSONResponse
 from utils.status_info import StatusInfo
 
 health_router = APIRouter()
@@ -28,9 +33,7 @@ async def service_info(request: Request):
 
 @health_router.get("/ping_baidu")
 async def ping_baidu(request: Request):
-    _ = request.state.gettext
-
-    response = requests.get('https://www.baidu.com')
+    response = requests.get("https://www.baidu.com")
     if response.status_code == 200:
         content = _("Baidu is accessible.")
     else:
@@ -40,9 +43,7 @@ async def ping_baidu(request: Request):
 
 @health_router.get("/ping_google")
 async def ping_google(request: Request):
-    _ = request.state.gettext
-
-    response = requests.get('https://www.google.com')
+    response = requests.get("https://www.google.com")
     if response.status_code == 200:
         content = _("Google is accessible.")
     else:
@@ -50,17 +51,17 @@ async def ping_google(request: Request):
     return JSONResponse(content)
 
 
-@health_router.get('/network_info')
+@health_router.get("/network_info")
 async def network_info(request: Request):
     """
     Checking Network Situation
     """
-    response = requests.get('https://ipinfo.io/json')
+    response = requests.get("https://ipinfo.io/json")
     data = response.json()
     return JSONResponse(data)
 
 
-@health_router.get('/db')
+@health_router.get("/db")
 async def root_db(request: Request, session: AsyncSession = Depends(get_async_session)):
     # SQLDB数据库连接健康检查
     try:
@@ -74,7 +75,7 @@ async def root_db(request: Request, session: AsyncSession = Depends(get_async_se
         sync_r = sync_result.fetchall()
         for i in sync_r:
             print(f"Sync DB: {i}")
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Database connection failed.")
 
     return PlainTextResponse("Database connection is healthy.")
@@ -94,9 +95,9 @@ async def redis_health(request: Request):
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=f"Redis connection error: {e}")
 
 
-@health_router.get('/locale_time')
+@health_router.get("/locale_time")
 async def locale_time(request: Request):
-    tz = pytz.timezone('Asia/Shanghai')
+    tz = pytz.timezone("Asia/Shanghai")
     locale_time = datetime.now()
     china_time = datetime.now(tz)
     data = LocaleTimeSchema(locale_time=locale_time, china_time=china_time)

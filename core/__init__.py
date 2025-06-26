@@ -14,7 +14,6 @@ from core.middleware.context import RequestContextMiddleware
 from core.middleware.encryption import EncryptionMiddleware
 from core.middleware.locale import LocaleMiddleware
 from core.middleware.profiler import PyInstrumentMiddleware
-from core.translation import translation_manager
 from routers import api_router
 from routers import direct_router
 from settings import settings
@@ -41,7 +40,7 @@ def create_app() -> FastAPI:
         allow_headers=settings.ALLOW_HEADERS,
     )
     # 添加i18n国际化中间件
-    app.add_middleware(LocaleMiddleware, translation_manager=translation_manager)
+    app.add_middleware(LocaleMiddleware)
     # API加密/解密
     app.add_middleware(EncryptionMiddleware)
     # 添加 pyinstrument 性能分析中间件
