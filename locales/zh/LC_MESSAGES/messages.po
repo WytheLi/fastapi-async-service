@@ -16,3 +16,6 @@ msgstr "谷歌可访问。"
 
 msgid "Google is not accessible."
 msgstr "谷歌不可访问。"
+
+msgid "User is disable"
+msgstr "用户已禁用"

@@ -11,9 +11,9 @@ from models import AuthLogs
 from models import Role
 from schemas.account import DeviceSchema
 from services.account import UserResource
+from utils import stat_code
 from utils.crypt import verity_password
 from utils.geoip import GeoIPService
-from utils.status_info import StatusInfo
 
 
 @pytest.fixture
@@ -77,7 +77,7 @@ class TestAuthDevice:
         # 验证响应
         assert response.status_code == 200
         data = response.json()
-        assert data["code"] == StatusInfo.Success["code"]
+        assert data["code"] == stat_code.SUCCESS
         assert data["data"]["token"] == "mock_token"
 
     async def test_existing_device_login(self, client: AsyncClient, async_session):

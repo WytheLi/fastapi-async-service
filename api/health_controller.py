@@ -16,12 +16,12 @@ from starlette.responses import JSONResponse
 from starlette.responses import PlainTextResponse
 
 from core.cache.redis import cache
-from core.response import CustomJSONResponse
+from core.response import StandardJSONResponse
 from core.utils.translation import ugettext_lazy as _
 from db.async_engine import get_async_session
 from schemas.health import LocaleTimeSchema
 from settings import settings
-from utils.status_info import StatusInfo
+from utils import stat_code
 
 health_router = APIRouter()
 
@@ -101,4 +101,4 @@ async def locale_time(request: Request):
     locale_time = datetime.now()
     china_time = datetime.now(tz)
     data = LocaleTimeSchema(locale_time=locale_time, china_time=china_time)
-    return CustomJSONResponse(StatusInfo.Success, data=data)
+    return StandardJSONResponse(stat_code.SUCCESS, data=data)

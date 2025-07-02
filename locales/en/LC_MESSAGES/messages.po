@@ -16,3 +16,6 @@ msgstr "Google is accessible."
 
 msgid "Google is not accessible."
 msgstr "Google is not accessible."
+
+msgid "User is disable"
+msgstr "User is disable"

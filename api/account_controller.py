@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from core.decorators import authorize_required
-from core.response import CustomJSONResponse
+from core.response import StandardJSONResponse
+from core.utils.translation import ugettext_lazy as _
 from db.async_engine import get_async_session
 from models import User
 from schemas.account import DeviceSchema
@@ -15,9 +16,9 @@ from services.repo.account import query_auth_device
 from services.repo.account import query_user_by_user_uuid
 from utils import constants
 from utils import signature
+from utils import stat_code
 from utils.geoip import geoip_service
 from utils.identifier import custom_identifier
-from utils.status_info import StatusInfo
 
 account_router = APIRouter()
 
@@ -48,11 +49,11 @@ async def install_device(
     else:
         user = await query_user_by_user_uuid(session, user_uuid=auth_device.user_uuid)
         if user.status == User.Status.DISABLE.value:
-            return CustomJSONResponse(StatusInfo.USER_IS_DISABLE)
+            return StandardJSONResponse(stat_code.USER_IS_DISABLE, _("User is disable"))
 
     token = signature.create_access_token(user.id)
 
-    return CustomJSONResponse(StatusInfo.Success, data={"token": token})
+    return StandardJSONResponse(stat_code.SUCCESS, data={"token": token})
 
 
 @account_router.get(
@@ -66,4 +67,4 @@ async def get_current_user(request: Request, session: AsyncSession = Depends(get
 
     data = UserSchema.model_validate(user, context={"request": request})
 
-    return CustomJSONResponse(StatusInfo.Success, data=data)
+    return StandardJSONResponse(stat_code.SUCCESS, data=data)
