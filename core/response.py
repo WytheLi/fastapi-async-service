@@ -12,7 +12,7 @@ class StandardJSONResponse(JSONResponse):
     """
 
     def __init__(self, code: int, msg: str = "success", data: Any = None, **kwargs):
-        body = {"code": code, "msg": msg}
+        body = {"code": code, "message": msg}
 
         if data is not None:
             body.update({"data": data})
