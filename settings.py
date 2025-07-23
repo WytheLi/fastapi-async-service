@@ -107,5 +107,8 @@ class Settings(BaseSettings):
     HTTP_REQUEST_ID_HEADER: str = "X-Request-ID"
     HTTP_PROCESS_TIME_HEADER: str = "X-Process-Time"
 
+    # WebSocket 配置
+    WEBSOCKET_TIMEOUT: int = 300  # 连接超时时间（秒）
+
 
 settings = Settings()

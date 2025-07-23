@@ -4,7 +4,7 @@ from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
-from core.decorators import authorize_required
+from core.dependencies import get_current_user
 from core.response import StandardJSONResponse
 from core.utils.translation import ugettext_lazy as _
 from db.async_engine import get_async_session
@@ -61,10 +61,11 @@ async def install_device(
     dependencies=[Depends(RateLimiter(times=1, seconds=10, identifier=custom_identifier))],
     summary="获取当前用户信息",
 )
-@authorize_required(perms=[])
-async def get_current_user(request: Request, session: AsyncSession = Depends(get_async_session)):
-    user = request.state.user
-
-    data = UserSchema.model_validate(user, context={"request": request})
+async def get_current_user(
+    request: Request,
+    session: AsyncSession = Depends(get_async_session),
+    current_user: User = Depends(get_current_user()),
+):
+    data = UserSchema.model_validate(current_user, context={"request": request})
 
     return StandardJSONResponse(stat_code.SUCCESS, data=data)
