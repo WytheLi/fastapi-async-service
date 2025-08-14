@@ -86,6 +86,12 @@ class Settings(BaseSettings):
     TIME_ZONE: str = "Asia/Shanghai"  # 默认时区
     LANGUAGE_CODE: str = "en"  # 默认语言
 
+    # APScheduler 配置
+    SCHEDULER_TIMEZONE: str = TIME_ZONE
+    SCHEDULER_JOB_DEFAULTS: dict = {"coalesce": False, "max_instances": 1}  # 是否合并执行  # 同时执行实例数
+    SCHEDULER_JOBSTORE: dict = {"default": {"type": "memory"}}  # 可以改为 redis / sqlalchemy
+    SCHEDULER_EXECUTOR: dict = {"default": {"type": "asyncio"}}
+
     # Kafka
     KAFKA_BOOTSTRAP_SERVERS: Optional[str] = None  # localhost:9092
     KAFKA_TOPIC: str = "fastapi_topic"

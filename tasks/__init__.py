@@ -1,9 +1,8 @@
-from typing import Any
-
 from core.scheduler import APSchedulerManager
+from tasks.example import job
 
 
-def scheduler_add_job(scheduler_manager: APSchedulerManager):
+def scheduler_add_jobs(scheduler_manager: APSchedulerManager):
     """
     配置定时任务
     """

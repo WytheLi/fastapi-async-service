@@ -10,6 +10,7 @@ from core.logger import configure_logger
 from core.scheduler import scheduler_manager
 from infrastructure.kafka.producer import kafka_producer
 from settings import settings
+from tasks import scheduler_add_jobs
 
 
 def startup_handler(app: FastAPI) -> Callable:  # type: ignore
@@ -17,8 +18,8 @@ def startup_handler(app: FastAPI) -> Callable:  # type: ignore
         if settings.LOGFILE_OUTPUT:
             configure_logger()
 
-        if not scheduler_manager.scheduler.running:
-            scheduler_manager.start()
+        scheduler_manager.start()
+        scheduler_add_jobs(scheduler_manager)
 
         # 初始化限流器
         redis_client = redis.asyncio.from_url(settings.REDIS_URL, decode_responses=True)
@@ -30,6 +31,7 @@ def startup_handler(app: FastAPI) -> Callable:  # type: ignore
 
         # 初始化redis连接池
         await cache.connect()
+
     return start_app
 
 
@@ -43,4 +45,5 @@ def shutdown_handler(app: FastAPI) -> Callable:  # type: ignore
 
         # 关闭redis连接
         await cache.close()
+
     return stop_app
